@@ -27,7 +27,7 @@ docker run -d \
   -e PORT=10086 \
   -e WS_PATH=/?ed=2048 \
   -p 10086:10086 \
-  ghcr.io/你的用户名/mous-node:latest
+  ghcr.io/zaofengyue/mous-node:latest
 ```
 
 ## 支持平台
@@ -53,7 +53,7 @@ docker run -d \
 | `DOMAIN` | 手动指定域名 | 自动识别 |
 | `PS_NAME` | 手动指定节点名称 | 自动识别国家+平台/ASN |
 
-也可以直接在 `index.js` 顶部预留配置里填写，优先级高于环境变量：
+也可以直接在 `index.js` 顶部预留配置里填写：
 
 ```javascript
 const PRESET_UUID    = '';
@@ -62,22 +62,6 @@ const PRESET_WS_PATH = '';
 const PRESET_HOST    = '';
 const PRESET_PS_NAME = '';
 ```
-
-## 节点名称自动识别规则
-
-```
-手动指定 PS_NAME / PRESET_PS_NAME
-        ↓
-识别到平台 → 国家简称+平台名（例如 SG-Railway）
-        ↓
-识别不到平台 → 国家简称+ASN组织名（例如 US-Amazon.com）
-        ↓
-识别失败 → mous
-```
-
-## 内存需求
-
-最低 128MB，建议 256MB。
 
 ## 注意事项
 
