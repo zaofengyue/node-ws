@@ -1,3 +1,11 @@
+// ========== 预留配置，留空则自动识别 ==========
+const PRESET_UUID    = '';
+const PRESET_PORT    = '';
+const PRESET_WS_PATH = '';
+const PRESET_HOST    = '';
+const PRESET_PS_NAME = '';
+// =============================================
+
 const { execSync, spawn } = require('child_process');
 const fs = require('fs');
 const os = require('os');
@@ -48,7 +56,7 @@ async function downloadV2ray() {
 
 async function main() {
   const UUID_FILE = '/etc/uuid.txt';
-  let UUID = process.env.UUID || '';
+  let UUID = PRESET_UUID || process.env.UUID || '';
   if (UUID) {
     fs.writeFileSync(UUID_FILE, UUID);
   } else if (fs.existsSync(UUID_FILE)) {
@@ -58,13 +66,15 @@ async function main() {
     fs.writeFileSync(UUID_FILE, UUID);
   }
 
-  const INBOUND_PORT = process.env.PORT || '10086';
-  const WS_PATH = process.env.WS_PATH || '/?ed=2048';
+  const INBOUND_PORT = PRESET_PORT || process.env.PORT || '10086';
+  const WS_PATH = PRESET_WS_PATH || process.env.WS_PATH || '/?ed=2048';
 
   let HOST = '';
   let PLATFORM = '';
 
-  if (process.env.VMESS_HOST) {
+  if (PRESET_HOST) {
+    HOST = PRESET_HOST;
+  } else if (process.env.VMESS_HOST) {
     HOST = process.env.VMESS_HOST;
   } else if (process.env.DOMAIN) {
     HOST = process.env.DOMAIN;
@@ -96,7 +106,7 @@ async function main() {
 
   const COUNTRY = await httpGet('https://ipapi.co/country');
 
-  let PS_NAME = process.env.PS_NAME || '';
+  let PS_NAME = PRESET_PS_NAME || process.env.PS_NAME || '';
   if (!PS_NAME) {
     if (PLATFORM) {
       PS_NAME = COUNTRY ? `${COUNTRY}-${PLATFORM}` : PLATFORM;
