@@ -75,9 +75,9 @@ PORT=8080 DOMAIN=你的域名或公网IP bash <(wget -qO- https://raw.githubuser
 | `WS_PATH` | WebSocket 路径 | `/?ed=2048` |
 | `VMESS_HOST` | 手动指定域名（最高优先级） | 自动识别 |
 | `DOMAIN` | 手动指定域名或公网 IP | 自动识别 |
-| `PS_NAME` | 手动指定节点名称 | 自动识别国家+平台/ASN |
+| `PS_NAME` | 手动指定节点名称 | 自动识别 |
 
-也可以直接在 `index.js` 顶部预留配置里填写，优先级高于环境变量：
+也可以直接在 `index.js` 顶部预留配置里填写：
 
 ```javascript
 const PRESET_UUID    = '';
@@ -86,29 +86,6 @@ const PRESET_WS_PATH = '';
 const PRESET_HOST    = '';
 const PRESET_PS_NAME = '';
 ```
-
-## TLS 自动判断
-
-| HOST 类型 | TLS | 客户端端口 |
-|---|---|---|
-| 域名（如 railway.app） | tls | 443 |
-| 公网 IP | none | 你设置的 PORT |
-
-## 节点名称自动识别规则
-
-```
-手动指定 PS_NAME / PRESET_PS_NAME
-        ↓
-识别到平台 → 国家简称+平台名（例如 SG-Railway）
-        ↓
-识别不到平台 → 国家简称+ASN组织名（例如 US-Amazon.com）
-        ↓
-识别失败 → mous
-```
-
-## 内存需求
-
-最低 128MB，建议 256MB。
 
 ## 注意事项
 
