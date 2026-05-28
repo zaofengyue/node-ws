@@ -23,7 +23,7 @@ docker pull ghcr.io/zaofengyue/mous-node:latest
 
 ```bash
 docker run -d \
-  -e DOMAIN=你的域名 \
+  -e DOMAIN=你的域名或公网IP \
   -e PORT=10086 \
   -e WS_PATH=/?ed=2048 \
   -p 10086:10086 \
@@ -44,7 +44,15 @@ wget：
 bash <(wget -qO- https://raw.githubusercontent.com/zaofengyue/mous-node/main/install.sh)
 ```
 
-运行后会交互式提示填写环境变量，留空则使用默认值。
+也可以在命令前直接指定变量，留空则交互式询问：
+
+```bash
+PORT=8080 DOMAIN=你的域名或公网IP bash <(curl -sL https://raw.githubusercontent.com/zaofengyue/mous-node/main/install.sh)
+```
+
+```bash
+PORT=8080 DOMAIN=你的域名或公网IP bash <(wget -qO- https://raw.githubusercontent.com/zaofengyue/mous-node/main/install.sh)
+```
 
 ## 支持平台
 
@@ -66,7 +74,7 @@ bash <(wget -qO- https://raw.githubusercontent.com/zaofengyue/mous-node/main/ins
 | `PORT` | 监听端口 | `10086` |
 | `WS_PATH` | WebSocket 路径 | `/?ed=2048` |
 | `VMESS_HOST` | 手动指定域名（最高优先级） | 自动识别 |
-| `DOMAIN` | 手动指定域名 | 自动识别 |
+| `DOMAIN` | 手动指定域名或公网 IP | 自动识别 |
 | `PS_NAME` | 手动指定节点名称 | 自动识别国家+平台/ASN |
 
 也可以直接在 `index.js` 顶部预留配置里填写，优先级高于环境变量：
@@ -79,8 +87,32 @@ const PRESET_HOST    = '';
 const PRESET_PS_NAME = '';
 ```
 
+## TLS 自动判断
+
+| HOST 类型 | TLS | 客户端端口 |
+|---|---|---|
+| 域名（如 railway.app） | tls | 443 |
+| 公网 IP | none | 你设置的 PORT |
+
+## 节点名称自动识别规则
+
+```
+手动指定 PS_NAME / PRESET_PS_NAME
+        ↓
+识别到平台 → 国家简称+平台名（例如 SG-Railway）
+        ↓
+识别不到平台 → 国家简称+ASN组织名（例如 US-Amazon.com）
+        ↓
+识别失败 → mous
+```
+
+## 内存需求
+
+最低 128MB，建议 256MB。
+
 ## 注意事项
 
 - 仅供学习研究使用，请遵守当地法律法规
 - 部署在境外服务器使用效果更佳
 - v2ray 启动时自动下载，首次启动需要联网
+- 使用公网 IP 部署时无需域名，直接填入 IP 地址即可
