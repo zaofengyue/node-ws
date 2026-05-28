@@ -30,16 +30,32 @@ docker run -d \
   ghcr.io/zaofengyue/mous-node:latest
 ```
 
+### 方式三：一键脚本（适用于有终端的平台）
+
+curl：
+
+```bash
+bash <(curl -sL https://raw.githubusercontent.com/zaofengyue/mous-node/main/install.sh)
+```
+
+wget：
+
+```bash
+bash <(wget -qO- https://raw.githubusercontent.com/zaofengyue/mous-node/main/install.sh)
+```
+
+运行后会交互式提示填写环境变量，留空则使用默认值。
+
 ## 支持平台
 
 | 平台 | 部署方式 | 域名自动识别 |
 |---|---|---|
-| Railway | 源码 / Docker | ✅ |
-| Render | 源码 / Docker | ✅ |
-| Zeabur | 源码 / Docker | ✅ |
-| Koyeb | 源码 / Docker | ✅ |
-| CloudFoundry | 源码 / Docker | ✅ |
-| 其他 VPS / 容器平台 | Docker | 自动获取公网 IP |
+| Railway | 源码 / Docker / 脚本 | ✅ |
+| Render | 源码 / Docker / 脚本 | ✅ |
+| Zeabur | 源码 / Docker / 脚本 | ✅ |
+| Koyeb | 源码 / Docker / 脚本 | ✅ |
+| CloudFoundry | 源码 / Docker / 脚本 | ✅ |
+| 其他 VPS / 容器平台 | Docker / 脚本 | 自动获取公网 IP |
 | 其他 Node.js 平台 | 源码 | 自动获取公网 IP |
 
 ## 环境变量
@@ -51,9 +67,9 @@ docker run -d \
 | `WS_PATH` | WebSocket 路径 | `/?ed=2048` |
 | `VMESS_HOST` | 手动指定域名（最高优先级） | 自动识别 |
 | `DOMAIN` | 手动指定域名 | 自动识别 |
-| `PS_NAME` | 手动指定节点名称 | 自动识别 |
+| `PS_NAME` | 手动指定节点名称 | 自动识别国家+平台/ASN |
 
-也可以直接在 `index.js` 顶部预留配置里填写：
+也可以直接在 `index.js` 顶部预留配置里填写，优先级高于环境变量：
 
 ```javascript
 const PRESET_UUID    = '';
