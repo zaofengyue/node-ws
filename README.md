@@ -18,7 +18,7 @@ package.json
 ### 方式二：Docker 镜像部署
 
 ```bash
-docker pull ghcr.io/你的用户名/mous-node:latest
+docker pull ghcr.io/zaofengyue/mous-node:latest
 ```
 
 ```bash
