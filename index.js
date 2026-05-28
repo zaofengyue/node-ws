@@ -11,6 +11,12 @@ const fs = require('fs');
 const os = require('os');
 const https = require('https');
 
+const HOME = process.env.HOME || '/tmp';
+const UUID_FILE = `${HOME}/uuid.txt`;
+const CONFIG_FILE = `${HOME}/v2ray-config.json`;
+const V2RAY_DIR = `${HOME}/v2ray`;
+const V2RAY_BIN = `${V2RAY_DIR}/v2ray`;
+
 function httpGet(url, timeout = 5000) {
   return new Promise((resolve) => {
     const req = https.get(url, { timeout }, (res) => {
@@ -23,10 +29,19 @@ function httpGet(url, timeout = 5000) {
   });
 }
 
-async function downloadV2ray() {
-  const V2RAY_DIR = '/tmp/v2ray';
-  const V2RAY_BIN = `${V2RAY_DIR}/v2ray`;
+function download(url, dest) {
+  try {
+    execSync(`curl -sL "${url}" -o "${dest}"`);
+    return;
+  } catch {}
+  try {
+    execSync(`wget -q "${url}" -O "${dest}"`);
+    return;
+  } catch {}
+  throw new Error(`下载失败: ${url}，请检查 curl 或 wget 是否可用`);
+}
 
+async function downloadV2ray() {
   if (fs.existsSync(V2RAY_BIN)) return V2RAY_BIN;
 
   const arch = os.arch();
@@ -48,14 +63,14 @@ async function downloadV2ray() {
   const url = `https://github.com/v2fly/v2ray-core/releases/download/${version}/v2ray-${platform}.zip`;
 
   fs.mkdirSync(V2RAY_DIR, { recursive: true });
-  execSync(`curl -sL "${url}" -o /tmp/v2ray.zip && unzip -qo /tmp/v2ray.zip -d ${V2RAY_DIR} && chmod +x ${V2RAY_BIN}`);
+  download(url, `${HOME}/v2ray.zip`);
+  execSync(`unzip -qo "${HOME}/v2ray.zip" -d "${V2RAY_DIR}" && chmod +x "${V2RAY_BIN}"`);
 
   console.log('v2ray 下载完成');
   return V2RAY_BIN;
 }
 
 async function main() {
-  const UUID_FILE = '/etc/uuid.txt';
   let UUID = PRESET_UUID || process.env.UUID || '';
   if (UUID) {
     fs.writeFileSync(UUID_FILE, UUID);
@@ -142,7 +157,7 @@ async function main() {
     outbounds: [{ protocol: 'freedom', settings: {} }]
   };
 
-  fs.writeFileSync('/etc/v2ray-config.json', JSON.stringify(config, null, 2));
+  fs.writeFileSync(CONFIG_FILE, JSON.stringify(config, null, 2));
 
   const vmessObj = {
     v: '2',
@@ -185,7 +200,7 @@ async function main() {
     v2rayBin = await downloadV2ray();
   }
 
-  const v2ray = spawn(v2rayBin, ['run', '-config', '/etc/v2ray-config.json'], {
+  const v2ray = spawn(v2rayBin, ['run', '-config', CONFIG_FILE], {
     stdio: 'inherit'
   });
 
