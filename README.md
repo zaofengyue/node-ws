@@ -51,7 +51,7 @@ docker run -d \
 | `WS_PATH` | WebSocket 路径 | `/?ed=2048` |
 | `VMESS_HOST` | 手动指定域名（最高优先级） | 自动识别 |
 | `DOMAIN` | 手动指定域名 | 自动识别 |
-| `PS_NAME` | 手动指定节点名称 | 自动识别国家+平台/ASN |
+| `PS_NAME` | 手动指定节点名称 | 自动识别 |
 
 也可以直接在 `index.js` 顶部预留配置里填写：
 
