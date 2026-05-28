@@ -70,6 +70,11 @@ async function downloadV2ray() {
   return V2RAY_BIN;
 }
 
+// 判断是否是 IP 地址
+function isIP(host) {
+  return /^(\d{1,3}\.){3}\d{1,3}$/.test(host) || /^[0-9a-fA-F:]+$/.test(host);
+}
+
 async function main() {
   let UUID = PRESET_UUID || process.env.UUID || '';
   if (UUID) {
@@ -119,6 +124,10 @@ async function main() {
            'your-domain.com';
   }
 
+  // 自动判断 TLS：IP 用 none，域名用 tls
+  const TLS = isIP(HOST) ? 'none' : 'tls';
+  const CLIENT_PORT = isIP(HOST) ? INBOUND_PORT : '443';
+
   const COUNTRY = await httpGet('https://ipapi.co/country');
 
   let PS_NAME = PRESET_PS_NAME || process.env.PS_NAME || '';
@@ -163,7 +172,7 @@ async function main() {
     v: '2',
     ps: PS_NAME,
     add: HOST,
-    port: '443',
+    port: CLIENT_PORT,
     id: UUID,
     aid: '0',
     scy: 'auto',
@@ -171,7 +180,7 @@ async function main() {
     type: 'none',
     host: HOST,
     path: WS_PATH,
-    tls: 'tls'
+    tls: TLS
   };
 
   const VMESS_LINK = 'vmess://' + Buffer.from(JSON.stringify(vmessObj)).toString('base64');
