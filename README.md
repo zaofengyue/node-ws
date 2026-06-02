@@ -54,18 +54,6 @@ UUID=xxx PORT=3000 DOMAIN=你的域名 NAME=节点名称 SUB=mysub bash <(curl -
 UUID=xxx PORT=3000 DOMAIN=你的域名 NAME=节点名称 SUB=mysub bash <(wget -qO- https://raw.githubusercontent.com/zaofengyue/mous-node/main/install.sh)
 ```
 
-## 支持平台
-
-| 平台 | 部署方式 | 域名自动识别 |
-|---|---|---|
-| Railway | 源码 / Docker / 脚本 | ✅ |
-| Render | 源码 / Docker / 脚本 | ✅ |
-| Zeabur | 源码 / Docker / 脚本 | ✅ |
-| Koyeb | 源码 / Docker / 脚本 | ✅ |
-| CloudFoundry | 源码 / Docker / 脚本 | ✅ |
-| 其他 VPS / 容器平台 | Docker / 脚本 | 自动获取公网 IP |
-| 其他 Node.js 平台 | 源码 | 自动获取公网 IP |
-
 ## 环境变量
 
 | 变量名 | 说明 | 默认值 |
