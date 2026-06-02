@@ -38,22 +38,32 @@ mkdir -p "$APP_DIR" && cd "$APP_DIR"
 echo -e "${GREEN}正在拉取文件...${NC}"
 $DL "$BASE_URL/index.js" $DL_O index.js
 $DL "$BASE_URL/package.json" $DL_O package.json
+$DL "$BASE_URL/index.html" $DL_O index.html
 
 # 有预设值就直接用，否则交互询问
+INPUT_UUID="${UUID:-}"
 INPUT_PORT="${PORT:-}"
-INPUT_HOST="${DOMAIN:-}"
+INPUT_DOMAIN="${DOMAIN:-}"
+INPUT_NAME="${NAME:-}"
+INPUT_SUB="${SUB:-}"
 
-if [ -z "$INPUT_PORT" ] && [ -z "$INPUT_HOST" ]; then
+if [ -z "$INPUT_UUID" ] && [ -z "$INPUT_PORT" ] && [ -z "$INPUT_DOMAIN" ] && [ -z "$INPUT_NAME" ] && [ -z "$INPUT_SUB" ]; then
   echo ""
   echo -e "${YELLOW}========== 环境变量配置（留空使用默认值）==========${NC}"
-  read -p "PORT（留空默认 10086）: " INPUT_PORT
-  read -p "DOMAIN/公网IP（留空自动识别）: " INPUT_HOST
+  read -p "UUID（留空自动生成）: " INPUT_UUID
+  read -p "PORT（留空默认 3000）: " INPUT_PORT
+  read -p "DOMAIN/域名（留空自动识别）: " INPUT_DOMAIN
+  read -p "NAME/节点名称（留空自动识别）: " INPUT_NAME
+  read -p "SUB/订阅路径（留空默认 sub）: " INPUT_SUB
 fi
 
 echo ""
 echo -e "${GREEN}正在启动...${NC}"
 
+export UUID="$INPUT_UUID"
 export PORT="$INPUT_PORT"
-export DOMAIN="$INPUT_HOST"
+export DOMAIN="$INPUT_DOMAIN"
+export NAME="$INPUT_NAME"
+export SUB="$INPUT_SUB"
 
 node index.js
