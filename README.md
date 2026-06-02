@@ -24,9 +24,8 @@ docker pull ghcr.io/zaofengyue/mous-node:latest
 ```bash
 docker run -d \
   -e DOMAIN=你的域名或公网IP \
-  -e PORT=10086 \
-  -e WS_PATH=/?ed=2048 \
-  -p 10086:10086 \
+  -e PORT=3000 \
+  -p 3000:3000 \
   ghcr.io/zaofengyue/mous-node:latest
 ```
 
