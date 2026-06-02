@@ -1,6 +1,6 @@
 # node-ws
 
-基于 v2ray 的 VMess/WebSocket 代理工具，支持直接上传源码部署或 Docker 镜像部署，启动时自动下载 v2ray，自动识别平台域名和节点名称。
+基于 v2ray 的 VMess/WebSocket 代理工具，支持直接上传源码部署或 Docker 镜像部署。
 
 ## 部署方式
 
@@ -73,7 +73,7 @@ UUID=xxx PORT=3000 DOMAIN=你的域名 NAME=节点名称 SUB=mysub bash <(wget -
 | `UUID` | 节点唯一ID | 自动生成 |
 | `PORT` | 监听端口 | `3000` |
 | `DOMAIN` | 手动指定域名或公网 IP | 自动识别 |
-| `NAME` | 手动指定节点名称 | 自动识别国家+平台/ASN |
+| `NAME` | 手动指定节点名称 | 自动生成 |
 | `SUB` | 订阅路径 | `sub` |
 
 也可以直接在 `index.js` 顶部预留配置里填写，优先级高于环境变量：
