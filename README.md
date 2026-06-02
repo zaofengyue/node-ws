@@ -47,11 +47,11 @@ bash <(wget -qO- https://raw.githubusercontent.com/zaofengyue/mous-node/main/ins
 也可以在命令前直接指定变量，留空则交互式询问：
 
 ```bash
-PORT=8080 DOMAIN=你的域名或公网IP bash <(curl -sL https://raw.githubusercontent.com/zaofengyue/mous-node/main/install.sh)
+UUID=xxx PORT=3000 DOMAIN=你的域名 NAME=节点名称 SUB=mysub bash <(curl -sL https://raw.githubusercontent.com/zaofengyue/mous-node/main/install.sh)
 ```
 
 ```bash
-PORT=8080 DOMAIN=你的域名或公网IP bash <(wget -qO- https://raw.githubusercontent.com/zaofengyue/mous-node/main/install.sh)
+UUID=xxx PORT=3000 DOMAIN=你的域名 NAME=节点名称 SUB=mysub bash <(wget -qO- https://raw.githubusercontent.com/zaofengyue/mous-node/main/install.sh)
 ```
 
 ## 支持平台
@@ -71,20 +71,16 @@ PORT=8080 DOMAIN=你的域名或公网IP bash <(wget -qO- https://raw.githubuser
 | 变量名 | 说明 | 默认值 |
 |---|---|---|
 | `UUID` | 节点唯一ID | 自动生成 |
-| `PORT` | 监听端口 | `10086` |
-| `WS_PATH` | WebSocket 路径 | `/?ed=2048` |
-| `VMESS_HOST` | 手动指定域名（最高优先级） | 自动识别 |
+| `PORT` | 监听端口 | `3000` |
 | `DOMAIN` | 手动指定域名或公网 IP | 自动识别 |
-| `PS_NAME` | 手动指定节点名称 | 自动识别 |
+| `NAME` | 手动指定节点名称 | 自动识别 |
 
 也可以直接在 `index.js` 顶部预留配置里填写：
 
 ```javascript
 const PRESET_UUID    = '';
 const PRESET_PORT    = '';
-const PRESET_WS_PATH = '';
-const PRESET_HOST    = '';
-const PRESET_PS_NAME = '';
+const PRESET_NAME = '';
 ```
 
 ## 注意事项
