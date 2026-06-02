@@ -6,11 +6,12 @@
 
 ### 方式一：源码部署（适用于 Node.js 平台）
 
-上传以下两个文件即可：
+上传以下文件即可：
 
 ```
 index.js
 package.json
+index.html（可选，自定义伪装页面）
 ```
 
 平台检测到 `package.json` 会自动运行 `npm start`，无需额外配置。
@@ -23,7 +24,7 @@ docker pull ghcr.io/zaofengyue/mous-node:latest
 
 ```bash
 docker run -d \
-  -e DOMAIN=你的域名或公网IP \
+  -e DOMAIN=你的域名 \
   -e PORT=3000 \
   -p 3000:3000 \
   ghcr.io/zaofengyue/mous-node:latest
@@ -72,15 +73,52 @@ UUID=xxx PORT=3000 DOMAIN=你的域名 NAME=节点名称 SUB=mysub bash <(wget -
 | `UUID` | 节点唯一ID | 自动生成 |
 | `PORT` | 监听端口 | `3000` |
 | `DOMAIN` | 手动指定域名或公网 IP | 自动识别 |
-| `NAME` | 手动指定节点名称 | 自动识别 |
+| `NAME` | 手动指定节点名称 | 自动识别国家+平台/ASN |
+| `SUB` | 订阅路径 | `sub` |
 
-也可以直接在 `index.js` 顶部预留配置里填写：
+也可以直接在 `index.js` 顶部预留配置里填写，优先级高于环境变量：
 
 ```javascript
 const PRESET_UUID    = '';
 const PRESET_PORT    = '';
-const PRESET_NAME = '';
+const PRESET_HOST    = '';
+const PRESET_NAME    = '';
+const PRESET_SUB     = '';
 ```
+
+## 访问地址
+
+| 路径 | 内容 |
+|---|---|
+| `https://你的域名/` | 伪装页面 |
+| `https://你的域名/sub` | 订阅链接（base64） |
+
+## TLS 自动判断
+
+| HOST 类型 | TLS | 客户端端口 |
+|---|---|---|
+| 域名（如 railway.app） | tls | 443 |
+| 公网 IP | none | 你设置的 PORT |
+
+## 节点名称自动识别规则
+
+```
+手动指定 NAME / PRESET_NAME
+        ↓
+识别到平台 → 国家简称+平台名（例如 SG-Railway）
+        ↓
+识别不到平台 → 国家简称+ASN组织名（例如 US-Amazon.com）
+        ↓
+识别失败 → mous
+```
+
+## 自定义伪装页面
+
+在仓库根目录放置 `index.html` 文件即可自定义伪装页面，不放则显示默认 Hello World 页面。
+
+## 内存需求
+
+最低 128MB，建议 256MB。
 
 ## 注意事项
 
