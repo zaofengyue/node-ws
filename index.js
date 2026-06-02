@@ -18,6 +18,7 @@ const CONFIG_FILE = `${HOME}/v2ray-config.json`;
 const V2RAY_DIR = `${HOME}/v2ray`;
 const V2RAY_BIN_PATH = `${V2RAY_DIR}/v2ray`;
 const WS_PATH = '/fengyue';
+const V2RAY_INTERNAL_PORT = 10000;
 
 function httpGet(url, timeout = 5000) {
   return new Promise((resolve) => {
@@ -77,7 +78,6 @@ function isIP(host) {
 }
 
 async function main() {
-  // UUID
   let UUID = PRESET_UUID || process.env.UUID || '';
   if (UUID) {
     fs.writeFileSync(UUID_FILE, UUID);
@@ -88,14 +88,11 @@ async function main() {
     fs.writeFileSync(UUID_FILE, UUID);
   }
 
-  // 端口
   const INBOUND_PORT = parseInt(PRESET_PORT || process.env.PORT || '3000');
 
-  // 订阅路径
   const SUB_RAW = PRESET_SUB || process.env.SUB || 'sub';
   const SUB_PATH = '/' + SUB_RAW.replace(/^\//, '');
 
-  // 域名识别
   let HOST = '';
   let PLATFORM = '';
 
@@ -129,16 +126,13 @@ async function main() {
            'your-domain.com';
   }
 
-  // TLS 判断
   const TLS = isIP(HOST) ? 'none' : 'tls';
   const CLIENT_PORT = isIP(HOST) ? String(INBOUND_PORT) : '443';
 
-  // 国家识别
   const COUNTRY = await httpGet('https://ipinfo.io/country') ||
                   await httpGet('https://ifconfig.co/country-iso') ||
                   '';
 
-  // 节点名称
   let NAME = PRESET_NAME || process.env.NAME || '';
   if (!NAME) {
     if (PLATFORM) {
@@ -160,11 +154,10 @@ async function main() {
     }
   }
 
-  // 生成 v2ray 配置
   const config = {
     log: { loglevel: 'warning' },
     inbounds: [{
-      port: INBOUND_PORT,
+      port: V2RAY_INTERNAL_PORT,
       listen: '127.0.0.1',
       protocol: 'vmess',
       settings: {
@@ -180,7 +173,6 @@ async function main() {
 
   fs.writeFileSync(CONFIG_FILE, JSON.stringify(config, null, 2));
 
-  // 生成 VMess 链接
   const vmessObj = {
     v: '2',
     ps: NAME,
@@ -202,35 +194,29 @@ async function main() {
   console.log('================= VMESS =================');
   console.log(VMESS_LINK);
   console.log('=========================================');
+  console.log(`订阅地址: https://${HOST}${SUB_PATH}`);
 
-  // 读取伪装页
   const INDEX_HTML = fs.existsSync('./index.html')
     ? fs.readFileSync('./index.html', 'utf8')
     : '<html><body><h1>Hello World</h1></body></html>';
 
-  // 启动 HTTP 服务
   const server = http.createServer((req, res) => {
     const url = req.url.split('?')[0];
-
     if (url === SUB_PATH) {
-      // 订阅页
       res.writeHead(200, { 'Content-Type': 'text/plain; charset=utf-8' });
       res.end(SUB_CONTENT);
     } else if (url === WS_PATH) {
-      // WebSocket 由 v2ray 处理，HTTP 请求返回 400
       res.writeHead(400);
       res.end('Bad Request');
     } else {
-      // 伪装页
       res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
       res.end(INDEX_HTML);
     }
   });
 
-  // WebSocket 升级转发给 v2ray
   server.on('upgrade', (req, socket, head) => {
     const net = require('net');
-    const proxy = net.connect(INBOUND_PORT, '127.0.0.1', () => {
+    const proxy = net.connect(V2RAY_INTERNAL_PORT, '127.0.0.1', () => {
       proxy.write(
         `${req.method} ${req.url} HTTP/${req.httpVersion}\r\n` +
         Object.entries(req.headers).map(([k, v]) => `${k}: ${v}`).join('\r\n') +
@@ -246,10 +232,8 @@ async function main() {
 
   server.listen(INBOUND_PORT, '0.0.0.0', () => {
     console.log(`HTTP 服务启动，端口 ${INBOUND_PORT}`);
-    console.log(`订阅地址: https://${HOST}${SUB_PATH}`);
   });
 
-  // 启动 v2ray
   let v2rayBin = '';
   const v2rayPaths = [
     'v2ray',
@@ -270,8 +254,13 @@ async function main() {
     v2rayBin = await downloadV2ray();
   }
 
+  // 清除 PORT 环境变量，防止 v2ray 读取
+  const v2rayEnv = { ...process.env };
+  delete v2rayEnv.PORT;
+
   const v2ray = spawn(v2rayBin, ['run', '-config', CONFIG_FILE], {
-    stdio: 'inherit'
+    stdio: 'inherit',
+    env: v2rayEnv
   });
 
   v2ray.on('exit', (code) => process.exit(code));
