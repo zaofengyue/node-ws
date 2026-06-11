@@ -19,7 +19,7 @@ index.html（可选，自定义伪装页面）
 ### 方式二：Docker 镜像部署
 
 ```bash
-docker pull ghcr.io/zaofengyue/mous-node:latest
+docker pull ghcr.io/zaofengyue/node-ws:latest
 ```
 
 ```bash
@@ -27,7 +27,7 @@ docker run -d \
   -e DOMAIN=你的域名 \
   -e PORT=3000 \
   -p 3000:3000 \
-  ghcr.io/zaofengyue/mous-node:latest
+  ghcr.io/zaofengyue/node-ws:latest
 ```
 
 ### 方式三：一键脚本（适用于有终端的平台）
@@ -35,23 +35,23 @@ docker run -d \
 curl：
 
 ```bash
-bash <(curl -sL https://raw.githubusercontent.com/zaofengyue/mous-node/main/install.sh)
+bash <(curl -sL https://raw.githubusercontent.com/zaofengyue/node-ws/main/install.sh)
 ```
 
 wget：
 
 ```bash
-bash <(wget -qO- https://raw.githubusercontent.com/zaofengyue/mous-node/main/install.sh)
+bash <(wget -qO- https://raw.githubusercontent.com/zaofengyue/node-ws/main/install.sh)
 ```
 
 也可以在命令前直接指定变量，留空则交互式询问：
 
 ```bash
-UUID=xxx PORT=3000 DOMAIN=你的域名 NAME=节点名称 SUB=mysub bash <(curl -sL https://raw.githubusercontent.com/zaofengyue/mous-node/main/install.sh)
+UUID=xxx PORT=3000 DOMAIN=你的域名 NAME=节点名称 SUB=mysub bash <(curl -sL https://raw.githubusercontent.com/zaofengyue/node-ws/main/install.sh)
 ```
 
 ```bash
-UUID=xxx PORT=3000 DOMAIN=你的域名 NAME=节点名称 SUB=mysub bash <(wget -qO- https://raw.githubusercontent.com/zaofengyue/mous-node/main/install.sh)
+UUID=xxx PORT=3000 DOMAIN=你的域名 NAME=节点名称 SUB=mysub bash <(wget -qO- https://raw.githubusercontent.com/zaofengyue/node-ws/main/install.sh)
 ```
 
 ## 环境变量
