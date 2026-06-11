@@ -31,7 +31,7 @@ if ! command -v unzip >/dev/null 2>&1; then
   exit 1
 fi
 
-BASE_URL="https://raw.githubusercontent.com/zaofengyue/mous-node/main"
+BASE_URL="https://raw.githubusercontent.com/zaofengyue/node-ws/main"
 APP_DIR="$HOME/mous"
 mkdir -p "$APP_DIR" && cd "$APP_DIR"
 
